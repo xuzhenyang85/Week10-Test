@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="da"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Account.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TestingUnit</a> &gt; <a href="index.source.html" class="el_package">entity</a> &gt; <span class="el_source">Account.java</span></div><h1>Account.java</h1><pre class="source lang-java linenums">package entity;
+
+public class Account
+{
+    private double balance;
+
+    public Account()
+<span class="fc" id="L8">    {</span>
+<span class="fc" id="L9">        balance = 0;</span>
+<span class="fc" id="L10">    }</span>
+
+    public Account(double b)
+<span class="nc" id="L13">    {</span>
+<span class="nc" id="L14">        balance = b;</span>
+<span class="nc" id="L15">    }</span>
+
+    public void setBalance(double b)
+    {
+<span class="fc" id="L19">        balance = b;</span>
+<span class="fc" id="L20">    }</span>
+    
+    public double getBalance()
+    {
+<span class="nc" id="L24">        return balance;</span>
+    }
+    
+    public double getInterest()
+    {
+<span class="fc" id="L29">        double interest = 0;</span>
+        
+<span class="pc bpc" id="L31" title="1 of 4 branches missed.">        if(balance &gt; 0 &amp;&amp; balance &lt;= 100)</span>
+        {
+<span class="fc" id="L33">            interest = balance * 0.03;</span>
+        }
+<span class="pc bpc" id="L35" title="3 of 4 branches missed.">        else if(balance &gt; 100 &amp;&amp; balance &lt;= 1000)</span>
+        {
+<span class="nc" id="L37">            interest = balance * 0.05;</span>
+        }
+<span class="pc bpc" id="L39" title="1 of 2 branches missed.">        else if(balance &gt; 1000)</span>
+        {
+<span class="nc" id="L41">            interest = balance * 0.07;</span>
+        }
+        
+<span class="fc" id="L44">        return interest;</span>
+    }
+
+    public void deposit(double amount)
+    {
+<span class="nc" id="L49">        balance += amount;</span>
+<span class="nc" id="L50">    }</span>
+
+    public void withdraw(double amount)
+    {
+<span class="nc" id="L54">        balance -= amount;</span>
+<span class="nc" id="L55">    }    </span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
