@@ -1,0 +1,14 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+TestingDB,connector,DBConnector,34,0,2,0,15,0,4,0,3,0
+TestingDB,connector,DBConnectorNEW,6,56,3,5,4,17,3,6,0,5
+TestingDB,servlet,Control,261,0,22,0,61,0,21,0,8,0
+TestingDB,mapper,UserMapper,182,0,6,0,55,0,9,0,6,0
+TestingDB,mapper,CakeMapper,269,3,12,0,78,1,12,1,6,1
+TestingDB,mapper,InvoiceMapper,233,0,10,0,69,0,13,0,8,0
+TestingDB,mapper,CakeMapperNEW,156,286,6,8,31,88,7,8,2,6
+TestingDB,entity,Top,21,12,0,0,9,5,6,1,6,1
+TestingDB,entity,User,82,0,0,0,24,0,11,0,11,0
+TestingDB,entity,InvoiceLine,54,0,0,0,18,0,9,0,9,0
+TestingDB,entity,Cake,24,22,0,0,9,11,4,6,4,6
+TestingDB,entity,Bottom,21,12,0,0,9,5,6,1,6,1
+TestingDB,entity,Invoice,55,0,0,0,23,0,11,0,11,0

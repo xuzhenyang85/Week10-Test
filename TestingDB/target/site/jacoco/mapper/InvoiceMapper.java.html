@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="da"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InvoiceMapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TestingDB</a> &gt; <a href="index.source.html" class="el_package">mapper</a> &gt; <span class="el_source">InvoiceMapper.java</span></div><h1>InvoiceMapper.java</h1><pre class="source lang-java linenums">package mapper;
+
+import connector.DBConnector;
+import entity.Invoice;
+import entity.InvoiceLine;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+<span class="nc" id="L14">public class InvoiceMapper</span>
+{
+<span class="nc" id="L16">    CakeMapper ccm = new CakeMapper();</span>
+
+    public void checkInvoice(int invoiceId)
+    {
+        try
+        {
+<span class="nc" id="L22">            String sql = &quot;UPDATE invoice SET paid = 1 WHERE idInvoice = ?&quot;;</span>
+<span class="nc" id="L23">            PreparedStatement pstmt = DBConnector.getConnection().prepareStatement(sql);</span>
+<span class="nc" id="L24">            pstmt.setInt(1, invoiceId);</span>
+<span class="nc" id="L25">            int result = pstmt.executeUpdate();</span>
+        }
+<span class="nc" id="L27">        catch (SQLException ex)</span>
+        {
+<span class="nc" id="L29">            ex.printStackTrace();</span>
+<span class="nc" id="L30">        }</span>
+<span class="nc" id="L31">    }</span>
+
+    public Invoice getInvoiceById(int id)
+    {
+        try
+        {
+<span class="nc" id="L37">            String sql = &quot;select idInvoice, idUser, created from invoice WHERE idInvoice = ?&quot;;</span>
+
+<span class="nc" id="L39">            PreparedStatement pstmt = DBConnector.getConnection().prepareStatement(sql);</span>
+<span class="nc" id="L40">            pstmt.setInt(1, id);</span>
+<span class="nc" id="L41">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L43" title="All 2 branches missed.">            if (rs.next())</span>
+            {
+<span class="nc" id="L45">                int userId = rs.getInt(&quot;idUser&quot;);</span>
+<span class="nc" id="L46">                Date created = new Date(rs.getDate(&quot;created&quot;).getTime());</span>
+<span class="nc" id="L47">                return new Invoice(id, userId, created, getLinesByInvoice(id));</span>
+            }
+
+<span class="nc" id="L50">        } catch (SQLException ex)</span>
+        {
+<span class="nc" id="L52">            ex.printStackTrace();</span>
+<span class="nc" id="L53">        }</span>
+<span class="nc" id="L54">        return null;</span>
+    }
+
+    private List&lt;InvoiceLine&gt; getLinesByInvoice(int invoiceId)
+    {
+<span class="nc" id="L59">        List&lt;InvoiceLine&gt; lines = new ArrayList();</span>
+        try
+        {
+<span class="nc" id="L62">            String sql = &quot;select id, idInvoice, idCupcake, qty from invoicedetails WHERE idInvoice = ?&quot;;</span>
+<span class="nc" id="L63">            PreparedStatement pstmt = DBConnector.getConnection().prepareStatement(sql);</span>
+<span class="nc" id="L64">            pstmt.setInt(1, invoiceId);</span>
+<span class="nc" id="L65">            ResultSet rs = pstmt.executeQuery();</span>
+            
+<span class="nc bnc" id="L67" title="All 2 branches missed.">            while (rs.next())</span>
+            {
+<span class="nc" id="L69">                int id = rs.getInt(&quot;id&quot;);</span>
+<span class="nc" id="L70">                int cupcakeId = rs.getInt(&quot;idCupcake&quot;);</span>
+<span class="nc" id="L71">                int qty = rs.getInt(&quot;qty&quot;);</span>
+<span class="nc" id="L72">                lines.add(new InvoiceLine(id, invoiceId, ccm.getCakeById(cupcakeId), qty));</span>
+<span class="nc" id="L73">            }</span>
+
+        }
+<span class="nc" id="L76">        catch (SQLException ex)</span>
+        {
+<span class="nc" id="L78">            ex.printStackTrace();</span>
+<span class="nc" id="L79">        }</span>
+<span class="nc" id="L80">        return lines;</span>
+    }
+
+    public static void main(String[] args)
+    {
+<span class="nc" id="L85">        InvoiceMapper im = new InvoiceMapper();</span>
+<span class="nc" id="L86">        im.createInvoice(null, 1);</span>
+<span class="nc" id="L87">    }</span>
+
+    public int createInvoice(List&lt;InvoiceLine&gt; lines, int userId)
+    {
+        try
+        {
+<span class="nc" id="L93">            String sql = &quot;INSERT INTO invoice (idUser) VALUES (?)&quot;;</span>
+<span class="nc" id="L94">            PreparedStatement pstmt = DBConnector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
+<span class="nc" id="L95">            pstmt.setInt(1, userId);</span>
+<span class="nc" id="L96">            pstmt.executeUpdate();</span>
+<span class="nc" id="L97">            ResultSet rs = pstmt.getGeneratedKeys();</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (rs.next())</span>
+            {
+<span class="nc" id="L100">                final int invoiceId = rs.getInt(1);</span>
+<span class="nc bnc" id="L101" title="All 2 branches missed.">                if (lines != null)</span>
+                {
+<span class="nc" id="L103">                    lines.stream().forEach((line) -&gt;</span>
+                    {
+<span class="nc" id="L105">                        addInvoiceLine(invoiceId, line.getCupcake().getId(), line.getAmount());</span>
+<span class="nc" id="L106">                    });</span>
+                }
+
+<span class="nc" id="L109">                return invoiceId;</span>
+            } else
+            {
+<span class="nc" id="L112">                throw new SQLException(&quot;could not insert invoice&quot;);</span>
+            }
+<span class="nc" id="L114">        } catch (SQLException ex)</span>
+        {
+<span class="nc" id="L116">            ex.printStackTrace();</span>
+        }
+<span class="nc" id="L118">        return 0;</span>
+    }
+
+    public InvoiceLine addInvoiceLine(int invoiceId, int cupcakeId, int qty)
+    {
+        try
+        {
+<span class="nc" id="L125">            String sql = &quot;INSERT INTO invoicedetails (idInvoice, idCupcake, qty) VALUES (?,?,?)&quot;;</span>
+<span class="nc" id="L126">            PreparedStatement pstmt = DBConnector.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
+<span class="nc" id="L127">            pstmt.setInt(1, invoiceId);</span>
+<span class="nc" id="L128">            pstmt.setInt(2, cupcakeId);</span>
+<span class="nc" id="L129">            pstmt.setInt(3, qty);</span>
+<span class="nc" id="L130">            pstmt.executeUpdate();</span>
+<span class="nc" id="L131">            ResultSet rs = pstmt.getGeneratedKeys();</span>
+<span class="nc bnc" id="L132" title="All 2 branches missed.">            if (rs.next())</span>
+            {
+<span class="nc" id="L134">                return new InvoiceLine(rs.getInt(1), invoiceId, ccm.getCakeById(cupcakeId), qty);</span>
+            }
+
+<span class="nc" id="L137">        } catch (SQLException ex)</span>
+        {
+<span class="nc" id="L139">            ex.printStackTrace();</span>
+<span class="nc" id="L140">        }</span>
+<span class="nc" id="L141">        return null;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
