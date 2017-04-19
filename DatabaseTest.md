@@ -269,20 +269,20 @@ For details about writing tests using dbUnit, please refer to resources section.
 
 ##Resources
 
-<http://www.junit.org> 
-The definitive source for JUnit extensions
-
 <http://www.mockobjects.com/> 
-Perhaps the most widely used mock object library
-
-<http://www.mockmaker.org> 
-Creates mock objects for your classes
-
-<http://www.easymock.org> 
-A handy mock object framework based on dynamic proxies
+Mock objects book
 
 <http://www.ibm.com/developerworks/library/j-mocktest.html> 
-A very nice article about unit testing with mock objects
+Article about unit testing with mock objects
+
+<https://dzone.com/articles/getting-started-mocking-java>
+Getting started with Mockito
+
+<http://site.mockito.org/>
+Mocking framework for unit tests
+
+<http://www.easymock.org> 
+Mock object framework
 
 <http://dbunit.sourceforge.net>
 A testing framework for testing with a real database
