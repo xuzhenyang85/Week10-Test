@@ -10,18 +10,19 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 public class CakeMapperNEW
 {
-    DBConnectorNEW dbcn = new DBConnectorNEW();
+    private DBConnectorNEW dbcn = new DBConnectorNEW();
     
     public CakeMapperNEW()
     {
     }
     
-    public CakeMapperNEW(String driver, String url, String user, String password)
+    public CakeMapperNEW(DataSource ds)
     {
-        dbcn.init(driver, url, user, password);
+        dbcn.setSource(ds);
     }
     
     public Cake getCakeById(int id)
@@ -181,7 +182,7 @@ public class CakeMapperNEW
     public Top getTop(int id)
     {        
         Top top = null;
-            
+        
         try
         {
             dbcn.open();

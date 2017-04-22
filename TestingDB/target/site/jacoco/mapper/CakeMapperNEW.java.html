@@ -10,242 +10,243 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import javax.sql.DataSource;
 
 public class CakeMapperNEW
 {
-<span class="pc" id="L16">    DBConnectorNEW dbcn = new DBConnectorNEW();</span>
+<span class="pc" id="L17">    private DBConnectorNEW dbcn = new DBConnectorNEW();</span>
     
     public CakeMapperNEW()
-<span class="nc" id="L19">    {</span>
-<span class="nc" id="L20">    }</span>
+<span class="nc" id="L20">    {</span>
+<span class="nc" id="L21">    }</span>
     
-    public CakeMapperNEW(String driver, String url, String user, String password)
-<span class="fc" id="L23">    {</span>
-<span class="fc" id="L24">        dbcn.init(driver, url, user, password);</span>
-<span class="fc" id="L25">    }</span>
+    public CakeMapperNEW(DataSource ds)
+<span class="fc" id="L24">    {</span>
+<span class="fc" id="L25">        dbcn.setSource(ds);</span>
+<span class="fc" id="L26">    }</span>
     
     public Cake getCakeById(int id)
     {        
-<span class="fc" id="L29">        Cake cake = null;</span>
+<span class="fc" id="L30">        Cake cake = null;</span>
                 
-<span class="fc" id="L31">        int idTopping = 0;</span>
-<span class="fc" id="L32">        int idBottom = 0;</span>
+<span class="fc" id="L32">        int idTopping = 0;</span>
+<span class="fc" id="L33">        int idBottom = 0;</span>
         
         try
         {
-<span class="fc" id="L36">            dbcn.open();</span>
+<span class="fc" id="L37">            dbcn.open();</span>
 
-<span class="fc" id="L38">            String sql = &quot;select * from cupcake WHERE idCupcake = ?&quot;;</span>
-<span class="fc" id="L39">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
-<span class="fc" id="L40">            pstmt.setInt(1, id);</span>
-<span class="fc" id="L41">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L39">            String sql = &quot;select * from cupcake WHERE idCupcake = ?&quot;;</span>
+<span class="fc" id="L40">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
+<span class="fc" id="L41">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L42">            ResultSet rs = pstmt.executeQuery();</span>
             
-<span class="pc bpc" id="L43" title="1 of 2 branches missed.">            if (rs.next())</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">            if (rs.next())</span>
             {
-<span class="fc" id="L45">                cake = new Cake();</span>
-<span class="fc" id="L46">                cake.setId(id);</span>
-<span class="fc" id="L47">                cake.setName(rs.getString(&quot;cupcakeName&quot;));</span>
+<span class="fc" id="L46">                cake = new Cake();</span>
+<span class="fc" id="L47">                cake.setId(id);</span>
+<span class="fc" id="L48">                cake.setName(rs.getString(&quot;cupcakeName&quot;));</span>
                 
-<span class="fc" id="L49">                idTopping = rs.getInt(&quot;idTopping&quot;);</span>
-<span class="fc" id="L50">                idBottom = rs.getInt(&quot;idBottom&quot;);</span>
+<span class="fc" id="L50">                idTopping = rs.getInt(&quot;idTopping&quot;);</span>
+<span class="fc" id="L51">                idBottom = rs.getInt(&quot;idBottom&quot;);</span>
             }
             
-<span class="fc" id="L53">            rs.close();</span>
-<span class="fc" id="L54">            pstmt.close();</span>
+<span class="fc" id="L54">            rs.close();</span>
+<span class="fc" id="L55">            pstmt.close();</span>
         }
-<span class="nc" id="L56">        catch (SQLException ex)</span>
+<span class="nc" id="L57">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L58">            ex.printStackTrace();</span>
+<span class="nc" id="L59">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="pc" id="L62">            dbcn.close();</span>
-<span class="pc" id="L63">        }</span>
+<span class="pc" id="L63">            dbcn.close();</span>
+<span class="pc" id="L64">        }</span>
     
-<span class="pc bpc" id="L65" title="1 of 2 branches missed.">        if(cake != null)</span>
+<span class="pc bpc" id="L66" title="1 of 2 branches missed.">        if(cake != null)</span>
         {
-<span class="fc" id="L67">            cake.setTop(getTop(idTopping));</span>
-<span class="fc" id="L68">            cake.setBottom(getBottom(idBottom));</span>
+<span class="fc" id="L68">            cake.setTop(getTop(idTopping));</span>
+<span class="fc" id="L69">            cake.setBottom(getBottom(idBottom));</span>
         }
         
-<span class="fc" id="L71">        return cake;</span>
+<span class="fc" id="L72">        return cake;</span>
     }
 
     public Cake createCake(Bottom bottom, Top top)
     {        
-<span class="nc" id="L76">        Cake cake = null;</span>
+<span class="nc" id="L77">        Cake cake = null;</span>
         
         try
         {
-<span class="nc" id="L80">            dbcn.open();</span>
+<span class="nc" id="L81">            dbcn.open();</span>
             
-<span class="nc" id="L82">            String sql = &quot;INSERT INTO cupcake (cupcakeName, idTopping, idBottom) VALUES (?,?,?)&quot;;</span>
-<span class="nc" id="L83">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
-<span class="nc" id="L84">            String name = bottom.getName() + &quot; with &quot; + top.getName();</span>
-<span class="nc" id="L85">            pstmt.setString(1, name);</span>
-<span class="nc" id="L86">            pstmt.setInt(2, top.getId());</span>
-<span class="nc" id="L87">            pstmt.setInt(3, bottom.getId());</span>
-<span class="nc" id="L88">            pstmt.executeUpdate();</span>
-<span class="nc" id="L89">            ResultSet rs = pstmt.getGeneratedKeys();</span>
+<span class="nc" id="L83">            String sql = &quot;INSERT INTO cupcake (cupcakeName, idTopping, idBottom) VALUES (?,?,?)&quot;;</span>
+<span class="nc" id="L84">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
+<span class="nc" id="L85">            String name = bottom.getName() + &quot; with &quot; + top.getName();</span>
+<span class="nc" id="L86">            pstmt.setString(1, name);</span>
+<span class="nc" id="L87">            pstmt.setInt(2, top.getId());</span>
+<span class="nc" id="L88">            pstmt.setInt(3, bottom.getId());</span>
+<span class="nc" id="L89">            pstmt.executeUpdate();</span>
+<span class="nc" id="L90">            ResultSet rs = pstmt.getGeneratedKeys();</span>
             
-<span class="nc bnc" id="L91" title="All 2 branches missed.">            if (rs.next())</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">            if (rs.next())</span>
             {
-<span class="nc" id="L93">                cake = new Cake(rs.getInt(1), top, bottom, name);</span>
+<span class="nc" id="L94">                cake = new Cake(rs.getInt(1), top, bottom, name);</span>
             }
             
-<span class="nc" id="L96">            rs.close();</span>
-<span class="nc" id="L97">            pstmt.close();</span>
+<span class="nc" id="L97">            rs.close();</span>
+<span class="nc" id="L98">            pstmt.close();</span>
         }
-<span class="nc" id="L99">        catch (SQLException ex)</span>
+<span class="nc" id="L100">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L101">            ex.printStackTrace();</span>
+<span class="nc" id="L102">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="nc" id="L105">            dbcn.close();</span>
-<span class="nc" id="L106">        }</span>
+<span class="nc" id="L106">            dbcn.close();</span>
+<span class="nc" id="L107">        }</span>
         
-<span class="nc" id="L108">        return cake;</span>
+<span class="nc" id="L109">        return cake;</span>
     }
 
     public List&lt;Top&gt; getAllTops()
     {        
-<span class="fc" id="L113">        List&lt;Top&gt; tops = new ArrayList();</span>
+<span class="fc" id="L114">        List&lt;Top&gt; tops = new ArrayList();</span>
        
         try
         {
-<span class="fc" id="L117">            dbcn.open();</span>
+<span class="fc" id="L118">            dbcn.open();</span>
             
-<span class="fc" id="L119">            String sql = &quot;select idTopping, cupcakeToppingName, price from cupcaketopping&quot;;</span>
-<span class="fc" id="L120">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
+<span class="fc" id="L120">            String sql = &quot;select idTopping, cupcakeToppingName, price from cupcaketopping&quot;;</span>
+<span class="fc" id="L121">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
 
-<span class="fc" id="L122">            ResultSet rs = pstmt.executeQuery();</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">            while (rs.next())</span>
+<span class="fc" id="L123">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">            while (rs.next())</span>
             {
-<span class="fc" id="L125">                int id = rs.getInt(&quot;idTopping&quot;);</span>
-<span class="fc" id="L126">                String name = rs.getString(&quot;cupcakeToppingName&quot;);</span>
-<span class="fc" id="L127">                double price = rs.getDouble(&quot;price&quot;);</span>
-<span class="fc" id="L128">                tops.add(new Top(id, name, price));</span>
-<span class="fc" id="L129">            }</span>
+<span class="fc" id="L126">                int id = rs.getInt(&quot;idTopping&quot;);</span>
+<span class="fc" id="L127">                String name = rs.getString(&quot;cupcakeToppingName&quot;);</span>
+<span class="fc" id="L128">                double price = rs.getDouble(&quot;price&quot;);</span>
+<span class="fc" id="L129">                tops.add(new Top(id, name, price));</span>
+<span class="fc" id="L130">            }</span>
             
-<span class="fc" id="L131">            rs.close();</span>
-<span class="fc" id="L132">            pstmt.close();</span>
+<span class="fc" id="L132">            rs.close();</span>
+<span class="fc" id="L133">            pstmt.close();</span>
         }
-<span class="nc" id="L134">        catch (SQLException ex)</span>
+<span class="nc" id="L135">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L136">            ex.printStackTrace();</span>
+<span class="nc" id="L137">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="pc" id="L140">            dbcn.close();</span>
-<span class="pc" id="L141">        }</span>
+<span class="pc" id="L141">            dbcn.close();</span>
+<span class="pc" id="L142">        }</span>
         
-<span class="fc" id="L143">        return tops;</span>
+<span class="fc" id="L144">        return tops;</span>
     }
     
     public List&lt;Bottom&gt; getAllBottoms()
     {
-<span class="fc" id="L148">        List&lt;Bottom&gt; bottoms = new ArrayList();</span>
+<span class="fc" id="L149">        List&lt;Bottom&gt; bottoms = new ArrayList();</span>
         
         try
         {
-<span class="fc" id="L152">            dbcn.open();</span>
+<span class="fc" id="L153">            dbcn.open();</span>
             
-<span class="fc" id="L154">            String sql = &quot;select idBottom, cupcakeBottomName, price from cupcakebottom&quot;;</span>
-<span class="fc" id="L155">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
-<span class="fc" id="L156">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L155">            String sql = &quot;select idBottom, cupcakeBottomName, price from cupcakebottom&quot;;</span>
+<span class="fc" id="L156">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
+<span class="fc" id="L157">            ResultSet rs = pstmt.executeQuery();</span>
             
-<span class="fc bfc" id="L158" title="All 2 branches covered.">            while (rs.next())</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">            while (rs.next())</span>
             {
-<span class="fc" id="L160">                int id = rs.getInt(&quot;idBottom&quot;);</span>
-<span class="fc" id="L161">                String name = rs.getString(&quot;cupcakeBottomName&quot;);</span>
-<span class="fc" id="L162">                double price = rs.getDouble(&quot;price&quot;);</span>
-<span class="fc" id="L163">                bottoms.add(new Bottom(id, name, price));</span>
-<span class="fc" id="L164">            }</span>
+<span class="fc" id="L161">                int id = rs.getInt(&quot;idBottom&quot;);</span>
+<span class="fc" id="L162">                String name = rs.getString(&quot;cupcakeBottomName&quot;);</span>
+<span class="fc" id="L163">                double price = rs.getDouble(&quot;price&quot;);</span>
+<span class="fc" id="L164">                bottoms.add(new Bottom(id, name, price));</span>
+<span class="fc" id="L165">            }</span>
             
-<span class="fc" id="L166">            rs.close();</span>
-<span class="fc" id="L167">            pstmt.close();</span>
+<span class="fc" id="L167">            rs.close();</span>
+<span class="fc" id="L168">            pstmt.close();</span>
         }
-<span class="nc" id="L169">        catch (SQLException ex)</span>
+<span class="nc" id="L170">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L171">            ex.printStackTrace();</span>
+<span class="nc" id="L172">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="pc" id="L175">            dbcn.close();</span>
-<span class="pc" id="L176">        }</span>
+<span class="pc" id="L176">            dbcn.close();</span>
+<span class="pc" id="L177">        }</span>
         
-<span class="fc" id="L178">        return bottoms;</span>
+<span class="fc" id="L179">        return bottoms;</span>
     }
 
     public Top getTop(int id)
     {        
-<span class="fc" id="L183">        Top top = null;</span>
-            
+<span class="fc" id="L184">        Top top = null;</span>
+        
         try
         {
-<span class="fc" id="L187">            dbcn.open();</span>
+<span class="fc" id="L188">            dbcn.open();</span>
         
-<span class="fc" id="L189">            String sql = &quot;select cupcakeToppingName, price from cupcaketopping WHERE idTopping = ?&quot;;</span>
-<span class="fc" id="L190">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
-<span class="fc" id="L191">            pstmt.setInt(1, id);</span>
-<span class="fc" id="L192">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L190">            String sql = &quot;select cupcakeToppingName, price from cupcaketopping WHERE idTopping = ?&quot;;</span>
+<span class="fc" id="L191">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
+<span class="fc" id="L192">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L193">            ResultSet rs = pstmt.executeQuery();</span>
             
-<span class="pc bpc" id="L194" title="1 of 2 branches missed.">            if (rs.next())</span>
+<span class="pc bpc" id="L195" title="1 of 2 branches missed.">            if (rs.next())</span>
             {
-<span class="fc" id="L196">                String name = rs.getString(&quot;cupcakeToppingName&quot;);</span>
-<span class="fc" id="L197">                double price = rs.getDouble(&quot;price&quot;);</span>
-<span class="fc" id="L198">                top = new Top(id, name, price);</span>
+<span class="fc" id="L197">                String name = rs.getString(&quot;cupcakeToppingName&quot;);</span>
+<span class="fc" id="L198">                double price = rs.getDouble(&quot;price&quot;);</span>
+<span class="fc" id="L199">                top = new Top(id, name, price);</span>
             }
             
-<span class="fc" id="L201">            rs.close();</span>
-<span class="fc" id="L202">            pstmt.close();</span>
+<span class="fc" id="L202">            rs.close();</span>
+<span class="fc" id="L203">            pstmt.close();</span>
         }
-<span class="nc" id="L204">        catch (SQLException ex)</span>
+<span class="nc" id="L205">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L206">            ex.printStackTrace();</span>
+<span class="nc" id="L207">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="pc" id="L210">            dbcn.close();</span>
-<span class="pc" id="L211">        }</span>
+<span class="pc" id="L211">            dbcn.close();</span>
+<span class="pc" id="L212">        }</span>
         
-<span class="fc" id="L213">        return top;</span>
+<span class="fc" id="L214">        return top;</span>
     }
     
     public Bottom getBottom(int id)
     {        
-<span class="fc" id="L218">        Bottom bottom = null;</span>
+<span class="fc" id="L219">        Bottom bottom = null;</span>
         
         try
         {
-<span class="fc" id="L222">            dbcn.open();</span>
+<span class="fc" id="L223">            dbcn.open();</span>
         
-<span class="fc" id="L224">            String sql = &quot;select cupcakeBottomName, price from cupcakebottom WHERE idBottom = ?&quot;;</span>
-<span class="fc" id="L225">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
-<span class="fc" id="L226">            pstmt.setInt(1, id);</span>
-<span class="fc" id="L227">            ResultSet rs = pstmt.executeQuery();</span>
+<span class="fc" id="L225">            String sql = &quot;select cupcakeBottomName, price from cupcakebottom WHERE idBottom = ?&quot;;</span>
+<span class="fc" id="L226">            PreparedStatement pstmt = dbcn.getConnection().prepareStatement(sql);</span>
+<span class="fc" id="L227">            pstmt.setInt(1, id);</span>
+<span class="fc" id="L228">            ResultSet rs = pstmt.executeQuery();</span>
             
-<span class="pc bpc" id="L229" title="1 of 2 branches missed.">            if (rs.next())</span>
+<span class="pc bpc" id="L230" title="1 of 2 branches missed.">            if (rs.next())</span>
             {
-<span class="fc" id="L231">                String name = rs.getString(&quot;cupcakeBottomName&quot;);</span>
-<span class="fc" id="L232">                double price = rs.getDouble(&quot;price&quot;);</span>
-<span class="fc" id="L233">                bottom = new Bottom(id, name, price);</span>
+<span class="fc" id="L232">                String name = rs.getString(&quot;cupcakeBottomName&quot;);</span>
+<span class="fc" id="L233">                double price = rs.getDouble(&quot;price&quot;);</span>
+<span class="fc" id="L234">                bottom = new Bottom(id, name, price);</span>
             }
             
-<span class="fc" id="L236">            rs.close();</span>
-<span class="fc" id="L237">            pstmt.close();</span>
+<span class="fc" id="L237">            rs.close();</span>
+<span class="fc" id="L238">            pstmt.close();</span>
         }
-<span class="nc" id="L239">        catch (SQLException ex)</span>
+<span class="nc" id="L240">        catch (SQLException ex)</span>
         {
-<span class="nc" id="L241">            ex.printStackTrace();</span>
+<span class="nc" id="L242">            ex.printStackTrace();</span>
         }
         finally
         {
-<span class="pc" id="L245">            dbcn.close();</span>
-<span class="pc" id="L246">        }</span>
+<span class="pc" id="L246">            dbcn.close();</span>
+<span class="pc" id="L247">        }</span>
         
-<span class="fc" id="L248">        return bottom;</span>
+<span class="fc" id="L249">        return bottom;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

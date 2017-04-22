@@ -1,5 +1,6 @@
 package servlet;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import mapper.InvoiceMapper;
 import mapper.UserMapper;
 import entity.Bottom;
@@ -25,10 +26,20 @@ public class Control extends HttpServlet
 {
     UserMapper um = new UserMapper();
     InvoiceMapper im = new InvoiceMapper();
-    CakeMapperNEW cmn = new CakeMapperNEW("com.mysql.jdbc.Driver", "jdbc:mysql://localhost:3306/cupcakeshop", "root", "root");
+    CakeMapperNEW cmn;
     
     List<Bottom> bottoms;
     List<Top> tops;
+    
+    public Control()
+    {
+        MysqlDataSource datasource = new MysqlDataSource();
+        datasource.setURL("jdbc:mysql://localhost:3306/cupcakeshoptest");
+        datasource.setUser("root");
+        datasource.setPassword("root");
+        
+        cmn = new CakeMapperNEW(datasource);
+    }
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {

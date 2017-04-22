@@ -1,34 +1,30 @@
 package connector;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import javax.sql.DataSource;
 
 public class DBConnectorNEW
 {
-    private String driver, url, user, password;
-    private Connection conn = null;
-    
-    public void init(String driver, String url, String user, String password)
+    private DataSource datasource;
+    private Connection connection;
+        
+    public void setSource(DataSource ds)
     {
-        this.driver = driver;
-        this.url = url;
-        this.user = user;
-        this.password = password;
+        datasource = ds;
     }
     
     public Connection getConnection()
     {
-        return conn;
+        return connection;
     }
     
     public void open()
     {
         try
         {
-            if (conn == null || conn.isClosed())
-            {                
-                Class.forName(driver);
-                conn = DriverManager.getConnection(url, user, password);
+            if (connection == null || connection.isClosed())
+            {
+                connection = datasource.getConnection();
             }
         }
         catch (Exception ex)
@@ -41,9 +37,10 @@ public class DBConnectorNEW
     {
         try
         {
-            if(conn != null && !conn.isClosed())
-            {                
-                conn.close();
+            if(connection != null && !connection.isClosed())
+            {
+                connection.close();
+                connection = null;
             }
         }
         catch (Exception ex)

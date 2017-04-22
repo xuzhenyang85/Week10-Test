@@ -1,55 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="da"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>DBConnectorNEW.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">TestingDB</a> &gt; <a href="index.source.html" class="el_package">connector</a> &gt; <span class="el_source">DBConnectorNEW.java</span></div><h1>DBConnectorNEW.java</h1><pre class="source lang-java linenums">package connector;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
+import javax.sql.DataSource;
 
 <span class="fc" id="L6">public class DBConnectorNEW</span>
 {
-    private String driver, url, user, password;
-<span class="fc" id="L9">    private Connection conn = null;</span>
-    
-    public void init(String driver, String url, String user, String password)
+    private DataSource datasource;
+    private Connection connection;
+        
+    public void setSource(DataSource ds)
     {
-<span class="fc" id="L13">        this.driver = driver;</span>
-<span class="fc" id="L14">        this.url = url;</span>
-<span class="fc" id="L15">        this.user = user;</span>
-<span class="fc" id="L16">        this.password = password;</span>
-<span class="fc" id="L17">    }</span>
+<span class="fc" id="L13">        datasource = ds;</span>
+<span class="fc" id="L14">    }</span>
     
     public Connection getConnection()
     {
-<span class="fc" id="L21">        return conn;</span>
+<span class="fc" id="L18">        return connection;</span>
     }
     
     public void open()
     {
         try
         {
-<span class="pc bpc" id="L28" title="1 of 4 branches missed.">            if (conn == null || conn.isClosed())</span>
-            {                
-<span class="fc" id="L30">                Class.forName(driver);</span>
-<span class="fc" id="L31">                conn = DriverManager.getConnection(url, user, password);</span>
+<span class="pc bpc" id="L25" title="3 of 4 branches missed.">            if (connection == null || connection.isClosed())</span>
+            {
+<span class="fc" id="L27">                connection = datasource.getConnection();</span>
             }
         }
-<span class="nc" id="L34">        catch (Exception ex)</span>
+<span class="nc" id="L30">        catch (Exception ex)</span>
         {
-<span class="nc" id="L36">            ex.printStackTrace();</span>
-<span class="fc" id="L37">        }</span>
-<span class="fc" id="L38">    }</span>
+<span class="nc" id="L32">            ex.printStackTrace();</span>
+<span class="fc" id="L33">        }</span>
+<span class="fc" id="L34">    }</span>
     
     public void close()
     {
         try
         {
-<span class="pc bpc" id="L44" title="2 of 4 branches missed.">            if(conn != null &amp;&amp; !conn.isClosed())</span>
-            {                
-<span class="fc" id="L46">                conn.close();</span>
+<span class="pc bpc" id="L40" title="2 of 4 branches missed.">            if(connection != null &amp;&amp; !connection.isClosed())</span>
+            {
+<span class="fc" id="L42">                connection.close();</span>
+<span class="fc" id="L43">                connection = null;</span>
             }
         }
-<span class="nc" id="L49">        catch (Exception ex)</span>
+<span class="nc" id="L46">        catch (Exception ex)</span>
         {
-<span class="nc" id="L51">            ex.printStackTrace();</span>
-<span class="fc" id="L52">        }</span>
-<span class="fc" id="L53">    }</span>
+<span class="nc" id="L48">            ex.printStackTrace();</span>
+<span class="fc" id="L49">        }</span>
+<span class="fc" id="L50">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
