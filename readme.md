@@ -4,8 +4,8 @@ Testing (Unit / Integration / System)
 
 ## Resources
 
-[Test](Test.pdf)<br>
-[TestExercises](TestExercises.pdf)<br>
+[Test](TEST.pdf)<br>
+[TestExercises](TESTExercises.pdf)<br>
 [Project - TestingUnit](/TestingUnit)<br>
 [Project - TestingDB](/TestingDB)<br>
 [DatabaseTest](DatabaseTest.md)
